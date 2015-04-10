@@ -1,0 +1,62 @@
+<html>
+<head lang="utf-8" xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8"/>
+
+
+    <style>
+        .main_div{
+            text-align: center;
+            width:320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .sub_div{
+            text-align: left;
+        }
+    </style>
+    <title>options</title>
+
+ 
+</head>
+<body>
+    <div class="main_div">
+    <div class="sub_div"><b>允许调试：</b><input id="debug" type="checkbox"/></div>
+    <div class="sub_div"><b>自动操作间隔(秒)：</b><br><input id="interval" type="text"/></div>
+    <div class="sub_div"><b>搜索总页数：</b><br><input id="totalPage" type="text"/></div>
+    
+    <div class="sub_div">
+        <b>发布日期：</b>
+        <select id="postDate">
+            <option value="9"  selected  >--请选择--</option>
+            <option value="1"  >近一天</option>
+            <option value="2"  >近二天</option>
+            <option value="3"  >近三天</option>
+            <option value="4"  >近一周</option>
+            <option value="5"  >近两周</option>
+            <option value="6"  >近一月</option>
+            <option value="7"  >近六周</option>
+            <option value="8"  >近两月</option>
+        </select>
+        </div>
+    <div class="sub_div" id="city">
+        <b>工作城市：</b>
+        <input id="city_sh" value="020000" type="checkbox">上海</input> 
+        <input id="city_bj" value="010000" type="checkbox">北京</input> 
+        <input id="city_sz" value="040000" type="checkbox">深圳</input> 
+
+    </div>
+    <div class="sub_div"><b>职位关键字：</b><br><input id="title" type="text" size="80"/></div>
+    <div class="sub_div"><b>职位过滤(用空格分开)：</b><br><textarea id="exclude_title" rows="5" cols="70"></textarea></div>
+    <div class="sub_div"><b>公司过滤(用空格分开)：</b><br><textarea id="exclude_company" rows="10"  cols="70"></textarea></div>
+    <div class="sub_div"><b>登录信息:</b><br> *每行一个用户，登录名和密码用空格分开<br><textarea id="users" rows="10"  cols="70"></textarea></div>
+    
+    <div class="sub_div">
+        <br>
+        <button id="save">保存</button>
+        <button id="reset">重置</button>
+    </div>
+    </div>
+    <script src="jquery-2.0.3.min.js"></script>
+    <script src="options.js"></script>
+</body>
+</html>
