@@ -1,4 +1,5 @@
 var  PAGENO  = "currpage";
+var  DATE_FILTER = "date_filter";
 var  rules =  [];
 var  exclude_keys = [];
 var  exclude_comps = [];
@@ -32,7 +33,7 @@ function  Rule(name, fn){
 };
 
 Rule.prototype.execRule = function  (title, company){
-       return this.fn(title, company); 
+       return this.fn(title, company);
     };
 
 //  要排除的职位
@@ -84,12 +85,7 @@ rules[2] = match;
 
 // 获得搜索关键字
 function getKeyWord() {
-	var keys = $("div.insearch2").find("input[name='keyword']");
-	var key = null;
-	if (keys.length > 0) {
-		key = keys[0].value;
-	}
-	return key;
+  return $("#kwdselectid").val();
 }
 
 // 对字符串作一些处理，并以空白字符作为分隔符，返回字符串数组
@@ -104,7 +100,7 @@ function formatStrArr(str){
   $.each(arr,function(idx, str){
     str.trim();
   });
-  
+
   return arr;
 }
 
@@ -119,19 +115,24 @@ function calMatchRate(title, company){
        }
   });
   debug("the final result is " + res);
-  return res;  
+  return res;
 }
 
 // 在职位列表中筛选符合条件的职位
 function getSearchResult(cb){
   var t_cnt = 0;
-  var keyword = formatStrArr(getKeyWord()); 
-  var lines = $("#resultList").find("tr.tr0").each(function(index, element){
+  var keyword = formatStrArr(getKeyWord());
+  var date_filter = sessionStorage[DATE_FILTER];
+  if (!date_filter) {
+    sessionStorage[DATE_FILTER] = config.postDate;
+    $("#filter_issuedate ul li a")[parseInt(config.postDate) - 1].click();  //日期过滤
+  }
+  var lines = $("#resultList").find("div.el").each(function(index, element){
     var tmp = $(element);
-    var title = tmp.find("td:eq(1) a").text();
-    var company = tmp.find("td:eq(2) a").text().trim();
+    var title = tmp.find("p.t1 a").text();
+    var company = tmp.find("span.t2 a").text().trim();
     if( calMatchRate(title, company)){
-        tmp.find("td:eq(0) input[type='checkbox']").attr("checked", "true");
+        tmp.find("p.t1 input[type='checkbox']").attr("checked", "true");
         t_cnt++;
         debug("select " + t_cnt + " jobs on this page.");
     }
@@ -143,9 +144,9 @@ function getSearchResult(cb){
 function triggerStartPost(n, callback){
   if(n > 0){
     debug("start to post ...");
-    $("table.resultNav td span a.orange1:eq(1)").get(0).click();
+    $("#resultList div.dw_tlc div.op span.but_sq").get(0).click();
   }
-  
+
   debug("set timeout second 10 to go to next page ...");
   setTimeout(callback, parseInt(config.interval)* 1000);
 }
@@ -153,20 +154,26 @@ function triggerStartPost(n, callback){
 // goto next page
 function nextPage(){
   debug("goto next page now.");
-  var next = $("table.searchPageNav td img:eq(1)");
-  if ($(next).attr("src").indexOf("pageron.gif") != -1) {
-    $(next).get(0).click();
-  } else{
-    // 没有下一页了
-    debug("No more page ...");
-    logout();
-  };
-  
+  var next = $("div.p_wp div.p_in ul li.bk");
+  // 有前一页和后一页
+  var len = $(next).find("a").length;
+  if (len === 2) {
+    $(next).find("a")[1].click();
+  }else if(len === 1){
+    var val = $(next).find("a")[0].text;
+    if (val === "下一页") {
+      $(next).find("a")[0].click();
+    }else {
+      // 只有前一页，没有下一页了
+      debug("No more page ...");
+      logout();
+    }
+  }
 }
 
 
 // 投递一页
-function postOnePage(){ 
+function postOnePage(){
   getSearchResult(triggerStartPost);
 }
 
@@ -187,28 +194,28 @@ function logout(){
        delete sessionStorage[PAGENO];
        debug(logout_msg.info);
     });
-    $("#loginOutLink a").get(0).click();    
+    $("#loginOutLink a").get(0).click();
 }
 
 // 设置搜索关键字和工作地点
 function setKeywordAndCity(){
-     $("#kwdTypeSel li:eq(1)").click(); // 按职位搜索
-     $("div.left_t  p input.kwdBold").val(config.title);
-     //$("div.left_t  p input[name='btnJobarea']").val(config.workCity);   // 上海
-     $("div.left_t  p input[name='jobarea']").val(config.workCity.replace(",","+"));
-     $("table.condSelTbl select[name='issuedate']").val(config.postDate);     // 近一周
+    //  $("#searchTypeText").html('职位'); // 按职位搜索
+     $("#kwdselectid").val(config.title);  // 设置职位名称
+    //  $("#btnJobarea").val(config.workCity.split(',')[0]);
+     $("#jobarea").val(config.workCity.replace(',','+'));   //设置地区
+    //  $("table.condSelTbl select[name='issuedate']").val(config.postDate);     // 近一周
      setState("has_setKeywordAndCity", function(){
-       $("div.insearch3 p.searchan input[name='image']").get(0).click();
+       $("div.tSearch_btn a input")[0].click()
      });
 }
 
 // 高级搜索
 function expertSearch(){
     setState("has_expertSearch", function(){
-      $("#my_search div.spsearch a:eq(0)").get(0).click();
+      $("div.main ul li a").get(5).click();
     });
-    
-} 
+
+}
 
 
 // 投递多页
@@ -242,10 +249,10 @@ function getConfig(){
 
         $.each(config, function(idx, ele){
           debug(idx + " : " + ele);
-        });      
-        
-        startUserTimer(); 
-      }          
+        });
+
+        startUserTimer();
+      }
     });
 }
 
@@ -259,11 +266,11 @@ function  getUser(){
           window.clearInterval(timerUser);
           delete timerUser;
         }
-        user = user_msg;        
+        user = user_msg;
         debug("received user info from background: ");
         $.each(user, function(key, value){
           debug(key + " : " + value);
-        }); 
+        });
 
         startStateTimer();
       }
@@ -273,7 +280,7 @@ function  getUser(){
           delete timerUser;
         }
         debug("all resume has posted.");
-      }          
+      }
   });
 }
 
@@ -288,7 +295,7 @@ function getState(){
         }
          current_state = state_msg.curState;
          debug("the state is: "+ current_state);
-         fsm_states[current_state](); 
+         fsm_states[current_state]();
       }
     });
 }
@@ -325,6 +332,6 @@ fsm_states["has_setKeywordAndCity"] = postPages;
 
 location.href="javascript: window.alert = function(x) {console.log(x)}; window.confirm = function(x){console.log(x); return true;};";
 $(document).ready(startConfigTimer);
+// timerConfig = window.setInterval(startConfigTimer(), 1000);
 
 console.log("Waiting for start .....");
-
