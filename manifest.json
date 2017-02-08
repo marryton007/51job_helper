@@ -14,7 +14,7 @@
 	"permissions" : ["tabs"],
 	"web_accessible_resources":["jquery-1.11.3.min.map", "jquery-1.11.3.min.js"],
 	"content_scripts":[{
-		"matches":["http://*.51job.com/*"],
+		"matches":["https://*.51job.com/*","http://*.51job.com/*"],
 		"js":["jquery-1.11.3.min.js",  "job_helper.js"]
 	}]
 }

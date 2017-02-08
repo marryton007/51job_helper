@@ -14,4 +14,4 @@
 
 **4.使用方式**
 
-请先设置本插件相关选项，并打开[51job](http://my.51job.com/my/My_SignIn.php)即可工作
+请先设置本插件相关选项，并打开[51job](https://login.51job.com/login.php)即可工作

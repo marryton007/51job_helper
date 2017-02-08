@@ -179,10 +179,10 @@ function postOnePage(){
 
 // 登入
 function login(){
-      $("#username").val(user.username);
-      $("#userpwd").val(user.password);
+      $("#loginname").val(user.username);
+      $("#password").val(user.password);
       setState("has_logined", function(){
-        $("#signin li.padding_distance a input").get(0).click();
+        $("#login_btn").get(0).click();
       });
 }
 
@@ -194,7 +194,7 @@ function logout(){
        delete sessionStorage[PAGENO];
        debug(logout_msg.info);
     });
-    $("#loginOutLink a").get(0).click();
+    $("div.uer ul li a").get(5).click();
 }
 
 // 设置搜索关键字和工作地点
@@ -205,14 +205,14 @@ function setKeywordAndCity(){
      $("#jobarea").val(config.workCity.replace(',','+'));   //设置地区
     //  $("table.condSelTbl select[name='issuedate']").val(config.postDate);     // 近一周
      setState("has_setKeywordAndCity", function(){
-       $("div.tSearch_btn a input")[0].click()
+       $("div.dw_search.Fm input.s_but")[0].click()
      });
 }
 
 // 高级搜索
 function expertSearch(){
     setState("has_expertSearch", function(){
-      $("div.main ul li a").get(5).click();
+      $("div.nag div.in p a").get(1).click();
     });
 
 }
